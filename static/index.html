@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta id="colorSchemeMeta" name="color-scheme" content="light dark">
+  <meta id="themeColorMeta" name="theme-color" content="#f3f5f9">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>海乐抢占助手</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icon-180.png">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="/css/app.css?v=420">
+</head>
+<body>
+  <div class="app" id="appRoot">
+    <header class="topbar">
+      <div class="topline">
+        <button type="button" class="building-trigger" data-action="open-position-sheet" aria-label="切换洗衣房楼栋与常用设备">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <rect x="4" y="3" width="16" height="18" rx="3"></rect>
+              <circle cx="12" cy="13" r="4.2"></circle>
+              <path d="M8 6.5h2"></path>
+            </svg>
+          </span>
+          <span class="building-copy">
+            <span class="building-name" id="buildingName">泓园 7 号楼</span>
+            <svg class="building-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+              <path d="m6 9 6 6 6-6"></path>
+            </svg>
+          </span>
+        </button>
+
+        <div class="top-actions">
+          <button type="button" class="ota-badge-btn hidden" id="otaTopBtn" data-action="open-ota-sheet" title="发现新版本，查看并升级">更新</button>
+          <button type="button" class="account-pill" id="accountPill" data-action="open-account-sheet" aria-label="账号与设置">
+            <span class="dot"></span>
+            <span>同步中</span>
+          </button>
+          <button type="button" class="icon-btn" id="bellBtn" aria-label="锁单与收衣提醒开关">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18 8a6 6 0 1 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"></path>
+              <path d="M13.7 21a2 2 0 0 1-3.4 0"></path>
+            </svg>
+          </button>
+          <button type="button" class="icon-btn" id="themeBtn" aria-label="切换深浅色模式">
+            <svg id="themeIcon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </svg>
+          </button>
+          <button type="button" class="icon-btn" id="refreshBtn" aria-label="立即刷新状态">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
+              <path d="M21 3v6h-6"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout-grid">
+      <div class="primary-col" id="heroZone"></div>
+      <div class="secondary-col">
+        <section class="device-section-list" id="deviceList" aria-label="洗衣与烘干设备列表"></section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Mode & Pool Selection Sheet -->
+  <div class="sheet-wrap" id="modeSheet" aria-hidden="true">
+    <div class="sheet-backdrop" data-action="close-mode-sheet"></div>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <div class="grabber"></div>
+      <div class="sheet-head">
+        <div>
+          <div class="eyebrow" id="sheetKicker">选择洗烘套餐</div>
+          <div class="sheet-title" id="sheetTitle">设备</div>
+          <div class="sheet-sub" id="sheetMeta"></div>
+        </div>
+        <button type="button" class="icon-btn" data-action="close-mode-sheet" aria-label="关闭抽屉">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 6 6 18"></path>
+            <path d="m6 6 12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div class="mode-grid" id="modeGrid"></div>
+
+      <div id="selfCleanBlock" class="addon-switch hidden" role="switch" aria-checked="false" tabindex="0" data-action="toggle-self-clean">
+        <div>
+          <div class="addon-title">
+            <span>洗前筒自洁</span>
+            <span class="tag green">免费 · +6分</span>
+          </div>
+          <div class="addon-sub">先空桶自洁，完成后放衣关门并支付</div>
+        </div>
+        <div class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></div>
+      </div>
+
+      <div id="durationBlock" class="hidden" style="margin-top:12px;">
+        <div class="eyebrow">选择烘干时长</div>
+        <div class="segmented" id="durationOptions"></div>
+      </div>
+
+      <button type="button" class="btn" id="startBtn" style="width:100%; margin-top:14px;">开始抢占</button>
+    </div>
+  </div>
+
+  <!-- Dedicated Building, Map Picker & Recent Devices Sheet -->
+  <div class="sheet-wrap" id="positionSheet" aria-hidden="true">
+    <div class="sheet-backdrop" data-action="close-position-sheet"></div>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="positionSheetTitle">
+      <div class="grabber"></div>
+      <div class="sheet-head">
+        <div>
+          <div class="eyebrow">全国海乐通用 · 地图定位与历史设备</div>
+          <div class="sheet-title" id="positionSheetTitle">切换洗衣房点位</div>
+        </div>
+        <button type="button" class="icon-btn" data-action="close-position-sheet" aria-label="关闭点位切换">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 6 6 18"></path>
+            <path d="m6 6 12 12"></path>
+          </svg>
+        </button>
+      </div>
+
+      <div id="posQuickSection"></div>
+
+      <div class="pos-map-section">
+        <form id="posSearchForm" class="pos-search-bar" autocomplete="off">
+          <label for="posSearchInput" class="sr-only">搜索学校、校区、宿舍名或点位 ID</label>
+          <input id="posSearchInput" type="search" placeholder="搜索学校、校区或宿舍名">
+          <button type="submit" class="btn secondary small" id="posSearchBtn">搜索</button>
+          <button type="button" class="btn ghost small" id="posLocateBtn" data-action="locate-gps" title="使用当前 GPS 定位附近楼栋">定位</button>
+        </form>
+        <div id="posPlaceChips"></div>
+        <div class="map-viewport" id="posMapViewport" aria-label="交互式洗衣房选点地图"></div>
+        <div id="posNearbyList"></div>
+      </div>
+
+      <details class="custom-pos-details">
+        <summary>输入自定义点位 ID 或粘贴机身二维码链接</summary>
+        <form id="customPosForm" class="form-row" style="margin-top:8px;" autocomplete="off">
+          <label for="customPosInput" class="sr-only">点位 ID、二维码链接或机身码</label>
+          <input id="customPosInput" type="text" placeholder="如 32577、GTB2406... 或二维码链接">
+          <button type="submit" class="btn secondary small" id="customPosBtn">解析切换</button>
+        </form>
+        <div class="pay-hint" style="margin-top:6px;">支持任意海乐营业点数字 ID、经纬度，或微信扫机身二维码得到的链接与 15 位 IMEI。</div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Account, Building Switcher & Settings Sheet -->
+  <div class="sheet-wrap" id="accountSheet" aria-hidden="true">
+    <div class="sheet-backdrop" data-action="close-account-sheet"></div>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="accountSheetTitle">
+      <div class="grabber"></div>
+      <div class="sheet-head">
+        <div>
+          <div class="eyebrow">账户、点位与在线升级</div>
+          <div class="sheet-title" id="accountSheetTitle">控制中心</div>
+        </div>
+        <button type="button" class="icon-btn" data-action="close-account-sheet" aria-label="关闭控制中心">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 6 6 18"></path>
+            <path d="m6 6 12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div id="accountSheetBody"></div>
+    </div>
+  </div>
+
+  <!-- Dedicated OTA Update Sheet -->
+  <div class="sheet-wrap" id="otaSheet" aria-hidden="true">
+    <div class="sheet-backdrop" data-action="close-ota-sheet"></div>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="otaSheetTitle">
+      <div class="grabber"></div>
+      <div class="sheet-head">
+        <div>
+          <div class="eyebrow">在线版本更新 · 覆盖安装保留账号</div>
+          <div class="sheet-title" id="otaSheetTitle">发现新版本</div>
+        </div>
+        <button type="button" class="icon-btn" data-action="close-ota-sheet" aria-label="关闭更新窗口">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M18 6 6 18"></path>
+            <path d="m6 6 12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div id="otaSheetBody"></div>
+    </div>
+  </div>
+
+  <!-- Stop Confirmation Sheet -->
+  <div class="sheet-wrap" id="stopSheet" aria-hidden="true">
+    <div class="sheet-backdrop" data-action="close-stop-sheet"></div>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="stopTitle">
+      <div class="grabber"></div>
+      <div class="sheet-head">
+        <div>
+          <div class="eyebrow">确认操作</div>
+          <div class="sheet-title" id="stopTitle">停止当前抢占？</div>
+          <div class="sheet-sub" id="stopSub">将终止本任务轮询，并释放名下尚未支付或预约中的占坑单。</div>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+        <button type="button" class="btn secondary" data-action="close-stop-sheet">继续守护</button>
+        <button type="button" class="btn danger" id="confirmStopBtn">确认停止</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-stack" id="toastStack"></div>
+  <script type="module" src="/js/app.js?v=420"></script>
+</body>
+</html>

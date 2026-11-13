@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "hasUpdate": true,
+  "versionCode": 420,
+  "versionName": "4.2.0",
+  "apkUrl": "https://haile-bot.pages.dev/haile-bot-v4.apk",
+  "releaseNotes": "v4.2 通用选楼与常用设备升级：新增交互式地图拖动选点与全国高校/城市检索、GPS 精准坐标转换、自定义点位 ID/机身码解析，以及常用宿舍楼与最近使用设备一键直达",
+  "notes": "v4.2 通用选楼与常用设备升级：新增交互式地图拖动选点与全国高校/城市检索、GPS 精准坐标转换、自定义点位 ID/机身码解析，以及常用宿舍楼与最近使用设备一键直达"
+}

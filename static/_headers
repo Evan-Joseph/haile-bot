@@ -1,0 +1,21 @@
+/ota.json
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  Access-Control-Allow-Origin: *
+
+/api/ota
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  Access-Control-Allow-Origin: *
+
+/haile-bot-v4.apk
+  Content-Type: application/vnd.android.package-archive
+  Content-Disposition: attachment; filename="HaileBot-v4.apk"
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  Access-Control-Allow-Origin: *
+
+/haile-bot-v3.apk
+  Content-Type: application/vnd.android.package-archive
+  Content-Disposition: attachment; filename="HaileBot-v4.apk"
+  Cache-Control: no-store, no-cache, must-revalidate, max-age=0
+  Access-Control-Allow-Origin: *
